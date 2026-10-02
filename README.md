@@ -1,7 +1,7 @@
 # CS 302 Programming Assignment 2: Lists from Scratch (Snake Game)
 
-**Name:** YOUR NAME HERE
-**Course/Section:** CS 302, SECTION HERE
+**Name:** Phuc Ngoc Tan Huynh
+**Course/Section:** CS 302, 1001
 
 ## Overview
 

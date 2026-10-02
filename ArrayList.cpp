@@ -1,4 +1,5 @@
 #include "ArrayList.h"
+#include <stdexcept>
 
 template<typename T>
 ArrayList<T>::ArrayList() { 
