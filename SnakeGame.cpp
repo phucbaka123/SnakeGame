@@ -37,7 +37,11 @@ void SnakeGame::spawnFood(){
 }
 
 void SnakeGame::render(){
-    system("cls");
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
 
     string board[10];
     for(int r = 0; r < height; r++){

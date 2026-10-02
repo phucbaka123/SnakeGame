@@ -21,12 +21,13 @@ class ArrayList {
     bool remove(int index);
     T get(int index);
     int getLength();
-    bool clear();
+    void clear();
+    
 
     ~ArrayList();
 };
 
-#include "ArrayLists.cpp"
+#include "ArrayList.cpp"
 
 
 #endif

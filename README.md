@@ -1,45 +1,180 @@
-# CS 302 Programming Assignment 2
-Lists from Scratch: Building a Snake Game[cite: 5]
+# CS 302 Programming Assignment 2: Lists from Scratch (Snake Game)
+
+**Name:** YOUR NAME HERE
+**Course/Section:** CS 302, SECTION HERE
 
 ## Overview
-This project implements a terminal-based Snake game using two custom-built data structures[cite: 5]. I built an array-based list (`ArrayList<T>`) and a singly linked list (`LinkedList<T>`) from scratch, without using any existing C++ containers[cite: 5]. The game logic uses a type alias so it can run interchangeably with either list implementation[cite: 5].
 
-## Game Features
-* Terminal-based 2D board with fixed boundaries[cite: 5].
-* The snake starts with at least three segments[cite: 5].
-* Exactly one food item spawns at a time in an unoccupied location[cite: 5].
-* Collision detection ends the game if the snake hits a wall or its own body[cite: 5].
-* Displays the current score and the snake's length[cite: 5].
-* Option to start a new game or exit after Game Over[cite: 5].
+This project implements two list data structures from scratch and uses one of
+them to store the snake in a terminal-based Snake game:
 
-## Controls
-The game uses turn-based controls[cite: 5]:
-* W = up[cite: 5]
-* A = left[cite: 5]
-* S = down[cite: 5]
-* D = right[cite: 5]
-* Q = quit[cite: 5]
+- `ArrayList<T>`: an array-based list backed by a dynamically allocated array
+  that doubles in capacity when full.
+- `LinkedList<T>`: a singly linked list built from dynamically allocated `Node<T>`
+  objects, with a pointer to the first node.
 
-## Included Files
-This project includes the following 14 files[cite: 5]:
-* `ArrayList.h` and `ArrayList.cpp`[cite: 5]
-* `LinkedList.h` and `LinkedList.cpp`[cite: 5]
-* `Node.h` and `Node.cpp`[cite: 5]
-* `Position.h`[cite: 5]
-* `SnakeGame.h` and `SnakeGame.cpp`[cite: 5]
-* `main.cpp` (Main game driver)[cite: 5]
-* `tests.cpp` (Separate test driver for list implementations)[cite: 5]
-* `Makefile`[cite: 5]
-* `README.md`[cite: 5]
-* `Report.pdf`[cite: 5]
+No C++ containers (`std::vector`, `std::list`, etc.) are used to store the snake or
+to implement either list.
 
-## How to Compile and Run
-Use the included `Makefile` to compile the project[cite: 5]. 
+## Files
 
-To compile and run the main game:
-1. Type `make` or `make snakegame` in the terminal.
-2. Run `./snakegame`.
+| File | Purpose |
+|------|---------|
+| `ArrayList.h`, `ArrayList.cpp` | Array-based list (template) |
+| `LinkedList.h`, `LinkedList.cpp` | Singly linked list (template) |
+| `Node.h`, `Node.cpp` | Node used by `LinkedList` |
+| `Position.h` | `Position` struct (row, column) for one board cell |
+| `SnakeGame.h`, `SnakeGame.cpp` | Snake game logic and rendering |
+| `main.cpp` | Game driver (play again / exit loop) |
+| `tests.cpp` | Test driver for both list implementations |
+| `Makefile` | Build instructions |
+| `Report.pdf` | Design reflection answers |
+| `README.md` | This file |
 
-To compile and run the test cases for the list implementations:
-1. Type `make tests` in the terminal.
-2. Run `./run_tests`.
+Because `ArrayList`, `LinkedList` and `Node` are templates, each header
+`#include`s its matching `.cpp` file at the bottom. These `.cpp` files are not
+compiled on their own; they are compiled as part of any file that includes the
+header.
+
+## List API
+
+Both lists provide the same interface, so they are interchangeable.
+
+| Operation | Description |
+|-----------|-------------|
+| `void insert(int index, T value)` | Insert at `index` (valid range `0` to `length`) |
+| `remove(int index)` | Remove the element at `index` (valid range `0` to `length - 1`) |
+| `T get(int index)` | Return the element at `index` |
+| `int getLength()` | Number of elements |
+| `void clear()` | Remove all elements; the list can be reused afterward |
+
+- An invalid index in `get`, `insert` or `remove` throws `std::out_of_range`.
+- Both classes implement a destructor, a copy constructor and a copy-assignment
+  operator that perform **deep copies**. Self-assignment is safe.
+- `ArrayList` starts with a capacity of 10 (or a given initial capacity, at least 1)
+  and doubles its capacity whenever it is full. It does not shrink.
+
+## How to Build and Run
+
+Requires a C++17 compiler (g++) and `make`.
+
+```
+make              # builds both the game and the tests
+make snakegame    # builds only the game
+make tests        # builds only the tests
+make clean        # removes build output
+```
+
+On Windows with MinGW, use `mingw32-make` in place of `make`.
+
+Run the game:
+
+```
+./snakegame
+```
+
+Run the list tests:
+
+```
+./run_tests
+```
+
+## Game Controls
+
+The game is turn-based: type a letter and press **Enter** to take one step.
+
+| Key | Action |
+|-----|--------|
+| `W` | Move up |
+| `A` | Move left |
+| `S` | Move down |
+| `D` | Move right |
+| `Q` | Quit |
+
+Upper- and lower-case letters both work. Reversing directly into the snake's own
+neck is ignored, so it does not count as a move.
+
+## Game Rules and Display
+
+The board is 20 columns by 10 rows with fixed walls.
+
+| Symbol | Meaning |
+|--------|---------|
+| `#` | Wall |
+| `O` | Snake head |
+| `o` | Snake body |
+| `*` | Food |
+| (space) | Empty cell |
+
+- The snake starts with 3 segments.
+- Exactly one food item is on the board at a time, and it is never placed on the snake.
+- Eating food adds 10 to the score and grows the snake by one segment.
+  A new food item then appears in an unoccupied cell.
+- The current score and snake length are displayed each turn.
+- The game ends when the snake hits a wall, hits its own body, or the player quits.
+  A game-over message and the final score are then shown.
+- After a game ends, the player may start a new game (`Y`) or exit (`N`).
+  Each new game starts with a freshly initialized snake.
+
+## How the Snake Is Stored
+
+The snake is an ordered sequence of `Position` values stored in one of the custom
+lists. Index `0` is the head and the last index is the tail.
+
+- **Normal step:** insert the new head at index 0, then remove the last element.
+- **Eating food:** insert the new head at index 0 and do not remove the tail.
+- **Collision detection:** loops over the list with `get(i)` to compare the next
+  head position against every body segment.
+
+The board array in `render()` is only used for drawing; it never stores the snake.
+
+### Switching the Implementation
+
+The list used for the snake is chosen by one type alias in `SnakeGame.h`:
+
+```cpp
+using SnakeBody = LinkedList<Position>;
+// using SnakeBody = ArrayList<Position>;
+```
+
+Comment out one line and uncomment the other, then rebuild with `make`. No other
+game code needs to change.
+
+## Testing
+
+`tests.cpp` runs the same 19 test cases on both `ArrayList<int>` and
+`LinkedList<int>`:
+
+1. Construct an empty list
+2. Insert at the beginning
+3. Insert in the middle
+4. Insert at the end
+5. Remove the first element
+6. Remove a middle element
+7. Remove the last element
+8. Access every valid index
+9. Access an invalid index (expects `std::out_of_range`)
+10. Clear an empty list
+11. Clear a nonempty list
+12. Reuse a list after `clear()`
+13. Trigger multiple array resizes
+14. Copy an empty list
+15. Copy a nonempty list
+16. Modify the original after copying
+17. Modify the copy without affecting the original
+18. Assign one list to another (including chained and self-assignment)
+19. Destroy a nonempty list
+
+The program prints PASS/FAIL for every case and a final summary, and exits with a
+nonzero status if any test fails.
+
+To also check for memory errors and leaks (g++ or clang on Linux/macOS):
+
+```
+g++ -std=c++17 -g -fsanitize=address,undefined tests.cpp -o tests_asan
+./tests_asan
+```
+
+## Notes
+
+- Report answers to the design-reflection questions are in `Report.pdf`.

@@ -18,10 +18,11 @@ class LinkedList {
     void insert(int index, T value);
     int getLength();
     void remove(int index);
+    void clear();
 
     ~LinkedList();
 };
 
-#include "LinkedLists.cpp"
+#include "LinkedList.cpp"
 
 #endif

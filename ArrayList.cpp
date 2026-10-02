@@ -1,4 +1,4 @@
-#include "ArrayLists.h"
+#include "ArrayList.h"
 
 template<typename T>
 ArrayList<T>::ArrayList() { 
@@ -9,7 +9,11 @@ ArrayList<T>::ArrayList() {
 
 template<typename T>
 ArrayList<T>::ArrayList(int initialCapacity) { 
-    capacity = initialCapacity;
+    if(initialCapacity < 1){
+        capacity = 1;
+    } else {
+        capacity = initialCapacity;
+    }
     length = 0;
     data = new T[capacity];
 }
@@ -17,7 +21,7 @@ ArrayList<T>::ArrayList(int initialCapacity) {
 template<typename T>
 ArrayList<T>::ArrayList(const ArrayList& other) { 
     capacity = other.capacity;
-    length = other.capacity;
+    length = other.length;
     data = new T[capacity];
     for(int i = 0; i < length; i++){
         data[i] = other.data[i];
@@ -57,6 +61,9 @@ void ArrayList<T>::resize(int newCapacity) {
 
 template<typename T>
 void ArrayList<T>::insert(int index, T value) {
+    if(index < 0 || index > length){
+        throw std::out_of_range("Invalid index!");
+    }
     if(length == capacity){
         resize(capacity * 2);
     }
@@ -71,6 +78,11 @@ void ArrayList<T>::insert(int index, T value) {
 
 template<typename T>
 bool ArrayList<T>::remove(int index){
+
+    if(index < 0 || index >= length){
+        throw std::out_of_range("Invalid index!");
+    }
+
     for(int i = index; i < length - 1; i++){
         data[i] = data[i+1];
     }
@@ -81,8 +93,12 @@ bool ArrayList<T>::remove(int index){
 
 template<typename T>
 T ArrayList<T>::get(int index){
+    if(index < 0 || index >= length){
+        throw std::out_of_range("Invalid index!");
+    }
     return data[index];
 }   
+
 
 template<typename T>
 int ArrayList<T>::getLength(){
@@ -90,7 +106,7 @@ int ArrayList<T>::getLength(){
 } 
 
 template<typename T>
-bool ArrayList<T>::clear(){
+void ArrayList<T>::clear(){
     length = 0;
 }
 
@@ -99,3 +115,4 @@ template<typename T>
 ArrayList<T>::~ArrayList() {
     delete[] data;
 }
+

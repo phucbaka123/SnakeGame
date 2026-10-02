@@ -1,7 +1,7 @@
 #ifndef SNAKEGAME_H
 #define SNAKEGAME_H
 
-#include "LinkedLists.h"
+#include "LinkedList.h"
 #include "Position.h"
 
 using SnakeBody = LinkedList<Position>;

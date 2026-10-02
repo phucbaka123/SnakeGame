@@ -1,4 +1,4 @@
-#include "LinkedLists.h"
+#include "LinkedList.h"
 #include <stdexcept>
 
 template <typename T>
@@ -104,6 +104,17 @@ void LinkedList<T>::remove(int index){
     delete temp;
 }
 
+template<typename T>
+void LinkedList<T>::clear(){
+    Node<T>* current = head;
+    while(current != nullptr){
+        Node<T>* nextNode = current->next;
+        delete current;
+        current = nextNode;
+    }
+    head = nullptr;
+    length = 0;
+}
 
 template<typename T>
 LinkedList<T>::~LinkedList() {
