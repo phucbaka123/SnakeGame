@@ -17,6 +17,7 @@ class LinkedList {
     T get(int index);
     void insert(int index, T value);
     int getLength();
+    void remove(int index);
 
     ~LinkedList();
 };
